@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ewm-main-test (h2)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="ru.practicum.MainApp" />
-    <module name="main" />
+    <module name="main-service" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=test" />
     <extension name="coverage">
       <pattern>
