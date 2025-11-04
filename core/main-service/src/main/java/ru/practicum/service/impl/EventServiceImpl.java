@@ -12,7 +12,6 @@ import ru.practicum.entity.*;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.mapper.EventMapper;
-import ru.practicum.mapper.LocationMapper;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.params.PublicEventSearchParam;
@@ -46,7 +45,6 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final EventMapper eventMapper;
-    private final LocationMapper locationMapper;
     private final StatsClient statsClient;
 
     @Override

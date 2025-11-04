@@ -1,14 +1,10 @@
-server:
-  port: 8080
-
-stats:
-  server:
-    url: http://localhost:9090
-
+server.port: ${SERVER_PORT:0}
 
 spring:
   output.ansi.enabled: ALWAYS # цветной вывод в консоль
   sql.init.mode: always
+  application:
+    name: main-service
 
   datasource:
     driverClassName: org.postgresql.Driver
@@ -17,17 +13,25 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:password}
   jpa:
     show-sql: true
-    "properties.hibernate.format_sql": true
+    properties.hibernate.format_sql: true
     hibernate:
       ddl-auto: none
   jackson:
-    "serialization.write-dates-as-timestamps": false
+    serialization.write-dates-as-timestamps: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    preferIpAddress: true
+    instance-id: "${spring.application.name}:${random.value}"
 
 logging:
   level:
-    "org.zalando.logbook": TRACE
-    "org.springframework.orm.jpa": INFO
-    "org.springframework.orm.jpa.JpaTransactionManager": DEBUG
-    "org.springframework.transaction": INFO
-    "org.springframework.transaction.interceptor": TRACE
+    org.zalando.logbook: TRACE
+    org.springframework.orm.jpa: INFO
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+    org.springframework.transaction: INFO
+    org.springframework.transaction.interceptor: TRACE
     org.springframework.jdbc.datasource.init: DEBUG
