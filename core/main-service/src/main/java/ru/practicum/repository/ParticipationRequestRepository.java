@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.entity.ParticipationRequest;
 import ru.practicum.entity.RequestStatus;
-import ru.practicum.entity.User;
+import ru.practicum.user.dal.User;
 
 import java.util.List;
 import java.util.Map;

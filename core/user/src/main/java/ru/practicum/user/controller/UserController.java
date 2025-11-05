@@ -1,24 +1,29 @@
-package ru.practicum.controller.adminAPI;
+package ru.practicum.user.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.user.NewUserRequest;
-import ru.practicum.dto.user.UserDto;
-import ru.practicum.service.UserService;
+import ru.practicum.user.dto.NewUserRequest;
+import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.service.UserService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin/users")
 @RequiredArgsConstructor
-public class AdminUserController {
+@Validated
+public class UserController {
     private final UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@RequestBody NewUserRequest newUserRequest) {
-        return userService.addUser(newUserRequest);
+    public UserDto addUser(@RequestBody @Valid NewUserRequest request) {
+        return userService.addUser(request);
     }
 
     @DeleteMapping("/{userId}")
@@ -29,8 +34,8 @@ public class AdminUserController {
 
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(value = "ids", required = false) List<Long> ids,
-                                  @RequestParam(defaultValue = "0") Integer from,
-                                  @RequestParam(defaultValue = "10") Integer size) {
+                                  @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                  @RequestParam(defaultValue = "10") @Positive Integer size) {
         return userService.getUsers(ids, from, size);
     }
 }

@@ -23,6 +23,7 @@ logging:
   file:
     name: logs/${spring.application.name}.log
   level:
+    ru.practicum.interaction.logging: DEBUG
     org.zalando.logbook: TRACE
     org.springframework.orm.jpa: INFO
     org.springframework.orm.jpa.JpaTransactionManager: DEBUG

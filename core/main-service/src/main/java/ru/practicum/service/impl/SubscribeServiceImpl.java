@@ -9,20 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.dto.user.UserShortDto;
+import ru.practicum.user.dal.User;
+import ru.practicum.user.dto.UserMapper;
+import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.entity.Event;
 import ru.practicum.entity.RequestStatus;
 import ru.practicum.entity.Subscribe;
-import ru.practicum.entity.User;
-import ru.practicum.exception.NotFoundException;
+import ru.practicum.interaction.exception.NotFoundException;
 import ru.practicum.mapper.EventMapper;
-import ru.practicum.mapper.UserMapperStruct;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.ParticipationRequestRepository;
 import ru.practicum.repository.SubscribeRepository;
-import ru.practicum.repository.UserRepository;
+import ru.practicum.user.dal.UserRepository;
 import ru.practicum.service.SubscribeService;
 
 import java.util.Collection;
@@ -42,7 +42,7 @@ public class SubscribeServiceImpl implements SubscribeService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final ParticipationRequestRepository requestRepository;
-    private final UserMapperStruct userMapper;
+    private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
 
@@ -72,8 +72,8 @@ public class SubscribeServiceImpl implements SubscribeService {
     public List<UserShortDto> getSubscribes(long userId, int from, int size) {
         log.debug("Запрос на получение подписок пользователя id = {}", userId);
         List<Long> followedUsersIds = subscribeRepository.findFollowedUsersIds(userId);
-        List<User> users = userRepository.findAllByIdIn(followedUsersIds, PageRequest.of(from / size, size));
-        return users.stream().map(userMapper::toShortDto).toList();
+        List<User> users = userRepository.findAllByIdIn(followedUsersIds, PageRequest.of(from / size, size)).getContent();
+        return userMapper.toShortDto(users);
     }
 
     @Override

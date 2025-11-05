@@ -1,4 +1,4 @@
-package ru.practicum.dto;
+package ru.practicum.interaction.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,5 +18,6 @@ public class ApiError {
 
     String status;
 
-    LocalDateTime timestamp;
+    @Builder.Default
+    LocalDateTime timestamp = LocalDateTime.now();
 }

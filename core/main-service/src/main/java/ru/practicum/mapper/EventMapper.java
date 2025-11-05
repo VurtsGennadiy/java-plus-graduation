@@ -7,11 +7,12 @@ import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.entity.Event;
+import ru.practicum.user.dto.UserMapper;
 
 import java.util.Collection;
 import java.util.List;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapperStruct.class, UserMapperStruct.class, LocationMapper.class})
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapperStruct.class, UserMapper.class, LocationMapper.class})
 public interface EventMapper {
 
     @Mapping(target = "views", ignore = true)

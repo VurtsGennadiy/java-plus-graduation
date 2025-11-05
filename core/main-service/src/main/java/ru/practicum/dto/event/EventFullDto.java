@@ -3,7 +3,7 @@ package ru.practicum.dto.event;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.dto.category.CategoryDto;
-import ru.practicum.dto.user.UserShortDto;
+import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.entity.EventState;
 
 import java.time.LocalDateTime;

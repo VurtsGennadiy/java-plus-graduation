@@ -1,7 +1,7 @@
 package ru.practicum.service;
 
 import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.dto.user.UserShortDto;
+import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.params.PublicEventSearchParam;
 
 import java.util.List;

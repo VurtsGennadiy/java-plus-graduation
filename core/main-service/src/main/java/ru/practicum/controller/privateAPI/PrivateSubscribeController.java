@@ -6,12 +6,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.dto.user.UserShortDto;
-import ru.practicum.exception.BadRequestException;
+import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
 import ru.practicum.service.SubscribeService;
-
+import ru.practicum.interaction.exception.BadRequestException;
 import java.time.LocalDateTime;
 import java.util.List;
 

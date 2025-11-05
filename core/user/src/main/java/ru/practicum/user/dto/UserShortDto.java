@@ -1,6 +1,5 @@
-package ru.practicum.dto.user;
+package ru.practicum.user.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,12 +8,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDto {
+public class UserShortDto {
     Long id;
 
-    @NotBlank
     String name;
-
-    @NotBlank
-    String email;
 }

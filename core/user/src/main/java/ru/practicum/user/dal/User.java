@@ -1,4 +1,4 @@
-package ru.practicum.entity;
+package ru.practicum.user.dal;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
