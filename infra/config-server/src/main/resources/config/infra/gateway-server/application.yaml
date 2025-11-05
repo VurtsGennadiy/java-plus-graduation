@@ -1,0 +1,19 @@
+server.port: 8080
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    org.springframework.cloud.gateway: TRACE
+
+spring:
+  output.ansi.enabled: ALWAYS
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: main-service-route
+              uri: lb://main-service
+              predicates:
+                - Path=/**
