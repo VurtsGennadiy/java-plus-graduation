@@ -1,8 +1,9 @@
-package ru.practicum.interaction.logging;
+package ru.practicum.interaction.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import ru.practicum.interaction.logging.LoggingAspect;
 
 @Configuration
 @EnableAspectJAutoProxy

@@ -1,5 +1,6 @@
 package ru.practicum.interaction.exception;
 
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -141,5 +142,15 @@ public class GlobalExceptionHandler {
                 .build();
         log.error("Error:", ex);
         return new ResponseEntity<>(errorResponse, responseStatus);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleFeignException(FeignException ex) {
+        HttpStatus responseStatus = HttpStatus.valueOf(ex.status());
+        log.error("Error executing request from feign client:", ex);
+        return ResponseEntity
+                .status(responseStatus)
+                .header("Content-Type", "application/json")
+                .body(ex.contentUTF8());
     }
 }

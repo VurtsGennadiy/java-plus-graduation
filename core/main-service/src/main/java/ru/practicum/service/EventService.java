@@ -5,6 +5,9 @@ import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.params.PublicEventSearchParam;
+import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateRequest;
+import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateResult;
+import ru.practicum.interaction.dto.participation.ParticipationRequestDto;
 
 import java.util.List;
 
@@ -26,4 +29,10 @@ public interface EventService {
     EventFullDto getEventByIdAndUserId(Long userId, Long eventId);
 
     EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateRequest);
+
+    List<ParticipationRequestDto> getParticipationRequestForUserEvent(Long eventId, Long userId);
+
+    EventRequestStatusUpdateResult confirmingParticipationRequests(Long userId, Long eventId, EventRequestStatusUpdateRequest request);
+
+    EventFullDto getEventByIdForParticipation(Long id);
 }

@@ -1,10 +1,9 @@
-package ru.practicum.participation.dto;
+package ru.practicum.interaction.dto.participation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.participation.dal.RequestStatus;
 
 import java.util.List;
 

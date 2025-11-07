@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.participation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,8 +11,8 @@ import ru.practicum.interaction.config.LoggingConfig;
 @SpringBootApplication
 @EnableFeignClients("ru.practicum.interaction")
 @Import({LoggingConfig.class, JacksonConfig.class, ExceptionHandlingConfig.class})
-public class MainApp {
+public class ParticipationApp {
     public static void main(String[] args) {
-        SpringApplication.run(MainApp.class, args);
+        SpringApplication.run(ParticipationApp.class, args);
     }
 }

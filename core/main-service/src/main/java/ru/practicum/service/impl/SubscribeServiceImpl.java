@@ -9,18 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.interaction.client.ParticipationInitiatorClient;
 import ru.practicum.user.dal.User;
 import ru.practicum.user.dto.UserMapper;
 import ru.practicum.interaction.dto.UserShortDto;
 import ru.practicum.entity.Event;
-import ru.practicum.participation.dal.RequestStatus;
 import ru.practicum.entity.Subscribe;
 import ru.practicum.interaction.exception.NotFoundException;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.participation.dal.ParticipationRequestRepository;
 import ru.practicum.repository.SubscribeRepository;
 import ru.practicum.user.dal.UserRepository;
 import ru.practicum.service.SubscribeService;
@@ -41,10 +40,10 @@ public class SubscribeServiceImpl implements SubscribeService {
     private final SubscribeRepository subscribeRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final ParticipationRequestRepository requestRepository;
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
+    private final ParticipationInitiatorClient participationClient;
 
     private final String startDate = "2000-01-01 00:00:00";
     private final String endDate = "2100-01-01 00:00:00";
@@ -120,9 +119,8 @@ public class SubscribeServiceImpl implements SubscribeService {
     }
 
     private void connectConfirmedRequests(Collection<EventShortDto> events) {
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(
-                events.stream().map(EventShortDto::getId).toList(),
-                RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient
+                .getConfirmedRequestsCount(events.stream().map(EventShortDto::getId).toList());
 
         events.forEach(event ->
                 event.setConfirmedRequests(confirmed.getOrDefault(event.getId(), 0L)));

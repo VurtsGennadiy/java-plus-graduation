@@ -4,6 +4,7 @@
     <toRun name="DiscoveryServer" type="SpringBootApplicationConfigurationType" />
     <toRun name="GatewayServer" type="SpringBootApplicationConfigurationType" />
     <toRun name="MainApp" type="SpringBootApplicationConfigurationType" />
+    <toRun name="ParticipationApp" type="SpringBootApplicationConfigurationType" />
     <toRun name="StatsServer" type="SpringBootApplicationConfigurationType" />
     <method v="2" />
   </configuration>

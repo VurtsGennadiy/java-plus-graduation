@@ -1,9 +1,9 @@
 package ru.practicum.participation.dal;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.practicum.interaction.dto.participation.RequestStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -19,9 +19,9 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
             group by r.eventId""")
     List<Object[]> countRequestsByStatus(List<Long> ids, RequestStatus status);
 
-    int countByEventIdAndStatus(Long eventId, RequestStatus status);
-
     List<ParticipationRequest> findAllByRequesterId(Long userId);
+
+    int countByEventIdAndStatus(Long eventId, RequestStatus status);
 
     default Map<Long, Long> countRequestsByEventIdsAndStatus(List<Long> ids, RequestStatus status) {
         List<Object[]> result = countRequestsByStatus(ids, status);

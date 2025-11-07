@@ -11,12 +11,11 @@ import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.event.UpdateEventUserRequest;
-import ru.practicum.participation.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.participation.dto.EventRequestStatusUpdateResult;
-import ru.practicum.participation.dto.ParticipationRequestDto;
+import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateRequest;
+import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateResult;
+import ru.practicum.interaction.dto.participation.ParticipationRequestDto;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.service.EventService;
-import ru.practicum.participation.service.ParticipationRequestService;
 
 import java.util.List;
 
@@ -25,12 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/events")
 public class PrivateEventController {
-
     private final EventService eventService;
-    private final ParticipationRequestService requestService;
     private final String id = "/{eventId}";
     private final String requests = "/{eventId}/requests";
-
 
     @GetMapping
     public List<EventShortDto> getUsersEvents(@PathVariable @Positive Long userId,
@@ -69,21 +65,23 @@ public class PrivateEventController {
         return eventService.updateEventByUser(eventId, userId, event);
     }
 
-    // TODO наверное надо проверить что пользователь является автором события?
+    /**
+     * Получение информации о запросах на участие в событии текущего пользователя
+     */
     @GetMapping(requests)
     public List<ParticipationRequestDto> getUsersRequests(@PathVariable @Positive Long userId,
                                                           @PathVariable @Positive Long eventId) {
-
-        List<ParticipationRequestDto> requestForEventByUserId = requestService.getRequestForEventByUserId(eventId, userId);
-        return requestForEventByUserId;
+        return eventService.getParticipationRequestForUserEvent(userId, eventId);
     }
 
+    /**
+     * Изменение статуса (подтверждена, отменена) заявок на участие в событии текущего пользователя
+     */
     @PatchMapping(requests)
-    public EventRequestStatusUpdateResult updateUsersRequests(@PathVariable @Positive Long userId,
-                                                              @PathVariable @Positive Long eventId,
-                                                              @RequestBody EventRequestStatusUpdateRequest updateRequest) {
-        EventFullDto event = eventService.getEventByIdAndUserId(eventId, userId);
-        return requestService.updateRequests(event, userId, updateRequest);
+    public EventRequestStatusUpdateResult confirmingParticipationRequests(@PathVariable @Positive Long userId,
+                                                                          @PathVariable @Positive Long eventId,
+                                                                          @RequestBody EventRequestStatusUpdateRequest request) {
+        return eventService.confirmingParticipationRequests(userId, eventId, request);
     }
 }
 

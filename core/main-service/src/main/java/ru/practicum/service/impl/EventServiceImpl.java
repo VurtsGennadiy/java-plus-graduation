@@ -8,25 +8,28 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.*;
-import ru.practicum.entity.*;
+import ru.practicum.entity.Category;
+import ru.practicum.entity.Event;
+import ru.practicum.entity.Location;
+import ru.practicum.interaction.client.ParticipationInitiatorClient;
 import ru.practicum.interaction.dto.EventFullDto;
+import ru.practicum.interaction.dto.EventState;
 import ru.practicum.interaction.dto.LocationDto;
+import ru.practicum.interaction.dto.participation.*;
 import ru.practicum.interaction.exception.ConflictException;
+import ru.practicum.interaction.exception.EntityNotFoundException;
 import ru.practicum.interaction.exception.NotFoundException;
-import ru.practicum.interaction.service.FindEvent;
+import ru.practicum.interaction.logging.Loggable;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
-import ru.practicum.participation.dal.RequestStatus;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.participation.dal.ParticipationRequestRepository;
 import ru.practicum.service.EventService;
 import ru.practicum.user.dal.User;
 import ru.practicum.user.dal.UserRepository;
-import ru.practicum.interaction.dto.EventState;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -44,14 +47,14 @@ import static ru.practicum.specifications.EventSpecifications.eventPublicSearchP
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService, FindEvent {
+public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
-    private final ParticipationRequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
+    private final ParticipationInitiatorClient participationClient;
 
     @Override
     public List<EventFullDto> getEventsByParams(EventAdminSearchParam params) {
@@ -65,8 +68,7 @@ public class EventServiceImpl implements EventService, FindEvent {
                 .toList();
 
         Map<Long, Long> views = getViews(eventIds);
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(eventIds,
-                RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(eventIds);
         return searched.stream()
                 .limit(params.getSize())
                 .map(event -> {
@@ -104,8 +106,7 @@ public class EventServiceImpl implements EventService, FindEvent {
         EventFullDto dto = eventMapper.toFullDto(updated);
 
         Map<Long, Long> views = getViews(List.of(eventId));
-        Map<Long, Long> confirmedRequests = requestRepository.countRequestsByEventIdsAndStatus(List.of(eventId),
-                RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmedRequests = participationClient.getConfirmedRequestsCount(List.of(eventId));
 
         dto.setViews(views.get(eventId));
         dto.setConfirmedRequests(confirmedRequests.get(eventId));
@@ -119,7 +120,7 @@ public class EventServiceImpl implements EventService, FindEvent {
 
         Event event = eventRepository.findByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено или не опубликовано"));
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(List.of(event.getId()), RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(List.of(id));
         Map<Long, Long> views = getViews(List.of(event.getId()));
 
         EventFullDto dto = eventMapper.toFullDto(event);
@@ -138,8 +139,7 @@ public class EventServiceImpl implements EventService, FindEvent {
                 .map(Event::getId)
                 .toList();
         Map<Long, Long> views = getViews(eventIds);
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(eventIds,
-                RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(eventIds);
 
         Stream<EventShortDto> eventShortDtoStream = events.stream()
                 .map(event -> {
@@ -169,8 +169,7 @@ public class EventServiceImpl implements EventService, FindEvent {
 
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> views = getViews(eventIds);
-        Map<Long, Long> confirmedRequests = requestRepository.countRequestsByEventIdsAndStatus(eventIds,
-                RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmedRequests = participationClient.getConfirmedRequestsCount(eventIds);
 
         return events.stream()
                 .map(event -> {
@@ -221,7 +220,7 @@ public class EventServiceImpl implements EventService, FindEvent {
             throw new ConflictException("Событие добавлено не текущем пользователем");
         }
 
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(List.of(event.getId()), RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(List.of(eventId));
         Map<Long, Long> views = getViews(List.of(event.getId()));
 
         EventFullDto dto = eventMapper.toFullDto(event);
@@ -236,7 +235,7 @@ public class EventServiceImpl implements EventService, FindEvent {
                 .orElseThrow(() -> new NotFoundException("Событие не найдено id=" + eventId));
         if (!Objects.equals(eventToUpdate.getInitiator().getId(), userId) ||
                 eventToUpdate.getState() == EventState.PUBLISHED) {
-            throw new ConflictException("Событие добавленно не теущем пользователем или уже было опубликовано");
+            throw new ConflictException("Событие добавлено не текущем пользователем или уже было опубликовано");
         }
         updateNotNullFields(eventToUpdate, event);
         if (event.getStateAction() == UserEventAction.CANCEL_REVIEW) {
@@ -246,7 +245,7 @@ public class EventServiceImpl implements EventService, FindEvent {
         }
         Event updated = eventRepository.save(eventToUpdate);
 
-        Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(List.of(eventId), RequestStatus.CONFIRMED);
+        Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(List.of(eventId));
         Map<Long, Long> views = getViews(List.of(eventId));
 
         EventFullDto result = eventMapper.toFullDto(updated);
@@ -304,9 +303,53 @@ public class EventServiceImpl implements EventService, FindEvent {
         if (event.getTitle() != null) eventToUpdate.setTitle(event.getTitle());
     }
 
+    @Loggable
     @Override
     public EventFullDto getEventByIdForParticipation(Long id) {
-        Event event = eventRepository.findById(id).orElseThrow();
+        Event event = getEventByIdOrElseThrow(id);
         return eventMapper.toFullDto(event);
+    }
+
+    /**
+     * Получить все запросы пользователей на участие в событии для автора события
+     * @param eventId - id события
+     * @param userId - id пользователя автора события
+     * @return - список заявок
+     */
+    @Loggable
+    @Override
+    public List<ParticipationRequestDto> getParticipationRequestForUserEvent(Long userId, Long eventId) {
+        Event event = getEventByIdOrElseThrow(eventId);
+        checkUserIsEventInitiator(event, userId);
+        return participationClient.getRequestForEvent(eventId);
+    }
+
+    /**
+     * Подтверждение или отклонение заявок на участие в событии
+     * @param userId - id пользователя, автора события
+     * @param eventId - id события
+     * @param request - EventRequestStatusUpdateRequest запрос на обновление статусов
+     * @return - результат выполнения запроса, содержит два списка заявок: отклоненные и подтвержденные
+     */
+    @Loggable
+    @Override
+    public EventRequestStatusUpdateResult confirmingParticipationRequests(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
+        Event event = getEventByIdOrElseThrow(eventId);
+        checkUserIsEventInitiator(event, userId);
+        ConfirmingParticipationRequest confirmingRequest = new ConfirmingParticipationRequest();
+        confirmingRequest.setEvent(eventMapper.toFullDto(event));
+        confirmingRequest.setUpdateRequest(request);
+        return participationClient.confirmingRequests(confirmingRequest);
+    }
+
+    private Event getEventByIdOrElseThrow(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event", eventId.toString()));
+    }
+
+    private void checkUserIsEventInitiator(Event event, Long userId) {
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new ConflictException(String.format("User %s is not initiator event %s", userId, event.getId()));
+        }
     }
 }
