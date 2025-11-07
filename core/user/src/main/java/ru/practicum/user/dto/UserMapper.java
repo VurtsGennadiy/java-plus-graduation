@@ -3,6 +3,7 @@ package ru.practicum.user.dto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import ru.practicum.interaction.dto.UserShortDto;
 import ru.practicum.user.dal.User;
 
 import java.util.List;

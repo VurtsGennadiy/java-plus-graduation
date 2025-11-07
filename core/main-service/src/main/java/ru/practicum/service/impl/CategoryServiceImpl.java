@@ -3,7 +3,7 @@ package ru.practicum.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.interaction.dto.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
 import ru.practicum.entity.Category;
 import ru.practicum.interaction.exception.BadRequestException;

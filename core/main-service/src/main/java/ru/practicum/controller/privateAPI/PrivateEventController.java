@@ -7,16 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.event.UpdateEventUserRequest;
-import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
-import ru.practicum.dto.request.EventRequestStatusUpdateResult;
-import ru.practicum.dto.request.ParticipationRequestDto;
+import ru.practicum.participation.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.participation.dto.EventRequestStatusUpdateResult;
+import ru.practicum.participation.dto.ParticipationRequestDto;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.service.EventService;
-import ru.practicum.service.ParticipationRequestService;
+import ru.practicum.participation.service.ParticipationRequestService;
 
 import java.util.List;
 
@@ -69,6 +69,7 @@ public class PrivateEventController {
         return eventService.updateEventByUser(eventId, userId, event);
     }
 
+    // TODO наверное надо проверить что пользователь является автором события?
     @GetMapping(requests)
     public List<ParticipationRequestDto> getUsersRequests(@PathVariable @Positive Long userId,
                                                           @PathVariable @Positive Long eventId) {
@@ -81,8 +82,8 @@ public class PrivateEventController {
     public EventRequestStatusUpdateResult updateUsersRequests(@PathVariable @Positive Long userId,
                                                               @PathVariable @Positive Long eventId,
                                                               @RequestBody EventRequestStatusUpdateRequest updateRequest) {
-
-        return requestService.updateRequests(eventId, userId, updateRequest);
+        EventFullDto event = eventService.getEventByIdAndUserId(eventId, userId);
+        return requestService.updateRequests(event, userId, updateRequest);
     }
 }
 

@@ -9,19 +9,24 @@ import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.*;
 import ru.practicum.entity.*;
+import ru.practicum.interaction.dto.EventFullDto;
+import ru.practicum.interaction.dto.LocationDto;
 import ru.practicum.interaction.exception.ConflictException;
 import ru.practicum.interaction.exception.NotFoundException;
+import ru.practicum.interaction.service.FindEvent;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
+import ru.practicum.participation.dal.RequestStatus;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.repository.ParticipationRequestRepository;
+import ru.practicum.participation.dal.ParticipationRequestRepository;
 import ru.practicum.service.EventService;
 import ru.practicum.user.dal.User;
 import ru.practicum.user.dal.UserRepository;
+import ru.practicum.interaction.dto.EventState;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -39,7 +44,7 @@ import static ru.practicum.specifications.EventSpecifications.eventPublicSearchP
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl implements EventService, FindEvent {
 
     private final EventRepository eventRepository;
     private final ParticipationRequestRepository requestRepository;
@@ -213,7 +218,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("Событие не найдено"));
 
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ConflictException("Событие добавленно не теущем пользователем");
+            throw new ConflictException("Событие добавлено не текущем пользователем");
         }
 
         Map<Long, Long> confirmed = requestRepository.countRequestsByEventIdsAndStatus(List.of(event.getId()), RequestStatus.CONFIRMED);
@@ -297,5 +302,11 @@ public class EventServiceImpl implements EventService {
         if (event.getParticipantLimit() != null) eventToUpdate.setParticipantLimit(event.getParticipantLimit());
         if (event.getRequestModeration() != null) eventToUpdate.setRequestModeration(event.getRequestModeration());
         if (event.getTitle() != null) eventToUpdate.setTitle(event.getTitle());
+    }
+
+    @Override
+    public EventFullDto getEventByIdForParticipation(Long id) {
+        Event event = eventRepository.findById(id).orElseThrow();
+        return eventMapper.toFullDto(event);
     }
 }

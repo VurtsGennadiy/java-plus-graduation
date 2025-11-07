@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.entity.Event;
-import ru.practicum.entity.EventState;
+import ru.practicum.interaction.dto.EventState;
 
 import java.util.Optional;
 

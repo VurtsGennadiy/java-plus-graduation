@@ -3,7 +3,7 @@ package ru.practicum.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.entity.Event;
@@ -12,7 +12,8 @@ import ru.practicum.user.dto.UserMapper;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapperStruct.class, UserMapper.class, LocationMapper.class})
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = {CategoryMapperStruct.class, UserMapper.class, LocationMapper.class})
 public interface EventMapper {
 
     @Mapping(target = "views", ignore = true)
@@ -33,6 +34,6 @@ public interface EventMapper {
     @Mapping(target = "location", source = "dto.location")
     @Mapping(target = "initiator", ignore = true)
     @Mapping(target = "category", ignore = true)
-    @Mapping(target = "state", expression = "java(ru.practicum.entity.EventState.PENDING)")
+    @Mapping(target = "state", expression = "java(ru.practicum.interaction.dto.EventState.PENDING)")
     Event toEntity(NewEventDto dto, Long userId);
 }

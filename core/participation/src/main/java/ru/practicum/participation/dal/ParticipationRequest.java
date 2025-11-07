@@ -1,12 +1,9 @@
-package ru.practicum.entity;
+package ru.practicum.participation.dal;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import ru.practicum.user.dal.User;
 
 import java.time.LocalDateTime;
 
@@ -23,15 +20,21 @@ public class ParticipationRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "requester_id", nullable = false)
-    User requester;
+    User requester;*/
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Column(name = "requester_id", nullable = false)
+    Long requesterId;
+
+/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id", nullable = false)
-    Event event;
+    Event event;*/
+
+    @Column(name = "event_id", nullable = false)
+    Long eventId;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

@@ -1,12 +1,9 @@
-package ru.practicum.repository;
+package ru.practicum.participation.dal;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.practicum.entity.ParticipationRequest;
-import ru.practicum.entity.RequestStatus;
-import ru.practicum.user.dal.User;
 
 import java.util.List;
 import java.util.Map;
@@ -16,15 +13,14 @@ import java.util.stream.Collectors;
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
 
     @Query("""
-            select r.event.id, count(r.id)
+            select r.eventId, count(r.id)
             from ParticipationRequest r
-            where r.event.id in ?1 and r.status = ?2
-            group by r.event.id""")
+            where r.eventId in ?1 and r.status = ?2
+            group by r.eventId""")
     List<Object[]> countRequestsByStatus(List<Long> ids, RequestStatus status);
 
-    long countByEventIdAndStatus(Long eventId, RequestStatus status);
+    int countByEventIdAndStatus(Long eventId, RequestStatus status);
 
-    @EntityGraph(attributePaths = {"requester", "event"})
     List<ParticipationRequest> findAllByRequesterId(Long userId);
 
     default Map<Long, Long> countRequestsByEventIdsAndStatus(List<Long> ids, RequestStatus status) {
@@ -36,8 +32,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
                 ));
     }
 
-    @EntityGraph(attributePaths = {"requester", "event"})
     List<ParticipationRequest> findAllByEventId(Long eventId);
 
-    Boolean existsByRequester(User user);
+    Boolean existsByEventIdAndRequesterId(Long eventId, Long requesterId);
 }

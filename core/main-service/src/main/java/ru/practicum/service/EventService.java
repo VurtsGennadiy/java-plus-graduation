@@ -1,6 +1,7 @@
 package ru.practicum.service;
 
 import ru.practicum.dto.event.*;
+import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.EventUserSearchParam;
 import ru.practicum.params.PublicEventSearchParam;

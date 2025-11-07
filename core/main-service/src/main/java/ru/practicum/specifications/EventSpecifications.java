@@ -4,7 +4,7 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.entity.Event;
-import ru.practicum.entity.EventState;
+import ru.practicum.interaction.dto.EventState;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.params.PublicEventSearchParam;
 

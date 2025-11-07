@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.interaction.exception.BadRequestException;
 import ru.practicum.params.PublicEventSearchParam;

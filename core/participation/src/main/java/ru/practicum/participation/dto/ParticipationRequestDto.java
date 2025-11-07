@@ -1,8 +1,8 @@
-package ru.practicum.dto.request;
+package ru.practicum.participation.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.entity.RequestStatus;
+import ru.practicum.participation.dal.RequestStatus;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package ru.practicum.entity;
+package ru.practicum.interaction.dto;
 
 public enum EventState {
     PENDING, PUBLISHED, CANCELED

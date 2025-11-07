@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.EventFullDto;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
-import ru.practicum.entity.EventState;
+import ru.practicum.interaction.dto.EventState;
 import ru.practicum.params.EventAdminSearchParam;
 import ru.practicum.service.EventService;
 

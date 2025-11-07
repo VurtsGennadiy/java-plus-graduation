@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.interaction.dto.LocationDto;
 
 import java.time.LocalDateTime;
 

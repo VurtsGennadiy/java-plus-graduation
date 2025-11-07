@@ -1,4 +1,4 @@
-package ru.practicum.entity;
+package ru.practicum.participation.dal;
 
 public enum RequestStatus {
     CONFIRMED, REJECTED, PENDING, CANCELED

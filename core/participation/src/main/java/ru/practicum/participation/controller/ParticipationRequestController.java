@@ -1,11 +1,11 @@
-package ru.practicum.controller.privateAPI;
+package ru.practicum.participation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.request.ParticipationRequestDto;
-import ru.practicum.service.ParticipationRequestService;
+import ru.practicum.participation.dto.ParticipationRequestDto;
+import ru.practicum.participation.service.ParticipationRequestService;
 
 import java.util.List;
 
@@ -13,12 +13,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/requests")
-public class ParticipationRequestPrivateController {
-
+public class ParticipationRequestController {
     private final ParticipationRequestService participationRequestService;
 
     @GetMapping
-    public List<ParticipationRequestDto> getRequests(@PathVariable Long userId) {
+    public List<ParticipationRequestDto> getRequestsByUser(@PathVariable Long userId) {
         return participationRequestService.getRequestsByUser(userId);
     }
 

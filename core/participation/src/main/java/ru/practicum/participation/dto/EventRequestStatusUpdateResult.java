@@ -1,21 +1,18 @@
-package ru.practicum.dto.request;
+package ru.practicum.participation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventRequestStatusUpdateResult {
-    @Builder.Default
     List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
 
-    @Builder.Default
     List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
 }
