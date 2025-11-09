@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.user.dal.User;
 
 @Getter
 @Setter
@@ -20,15 +19,26 @@ public class Subscribe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+/*    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_user_id")
-    User follower;
+    User follower;*/
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(name = "follower_user_id", nullable = false)
+    Long follower;
+
+/*    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_to_user_id")
-    User followedTo;
+    User followedTo;*/
 
-    public Subscribe(User follower, User followedTo) {
+    @Column(name = "followed_to_user_id", nullable = false)
+    Long followedTo;
+
+/*    public Subscribe(User follower, User followedTo) {
+        this.follower = follower;
+        this.followedTo = followedTo;
+    }*/
+
+    public Subscribe(Long follower, Long followedTo) {
         this.follower = follower;
         this.followedTo = followedTo;
     }

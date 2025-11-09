@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import ru.practicum.user.dal.User;
 import ru.practicum.interaction.dto.EventState;
 
 import java.time.LocalDateTime;
@@ -52,9 +51,8 @@ public class Event {
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "initiator_id", nullable = false)
-    User initiator;
+    @Column(name = "initiator_id", nullable = false)
+    Long initiator;
 
     @Column(name = "paid")
     Boolean paid;

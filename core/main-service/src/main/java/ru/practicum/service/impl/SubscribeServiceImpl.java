@@ -3,25 +3,22 @@ package ru.practicum.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.interaction.client.ParticipationInitiatorClient;
-import ru.practicum.user.dal.User;
-import ru.practicum.user.dto.UserMapper;
-import ru.practicum.interaction.dto.UserShortDto;
+import ru.practicum.interaction.client.UserClient;
+import ru.practicum.interaction.dto.user.UserDto;
+import ru.practicum.interaction.dto.user.UserShortDto;
 import ru.practicum.entity.Event;
 import ru.practicum.entity.Subscribe;
-import ru.practicum.interaction.exception.NotFoundException;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.SubscribeRepository;
-import ru.practicum.user.dal.UserRepository;
 import ru.practicum.service.SubscribeService;
 
 import java.util.Collection;
@@ -38,12 +35,11 @@ import static ru.practicum.specifications.EventSpecifications.eventFeedSearchPar
 @Slf4j
 public class SubscribeServiceImpl implements SubscribeService {
     private final SubscribeRepository subscribeRepository;
-    private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
     private final ParticipationInitiatorClient participationClient;
+    private final UserClient userClient;
 
     private final String startDate = "2000-01-01 00:00:00";
     private final String endDate = "2100-01-01 00:00:00";
@@ -52,9 +48,7 @@ public class SubscribeServiceImpl implements SubscribeService {
     @Transactional
     public void createSubscribe(long followerUserId, long followedToUserId) {
         log.debug("Запрос на создание подписки пользователя id = {} на пользователя id = {}", followerUserId, followedToUserId);
-        User follower = getUserOrElseThrow(followerUserId);
-        User followedTo = getUserOrElseThrow(followedToUserId);
-        Subscribe subscribe = new Subscribe(follower, followedTo);
+        Subscribe subscribe = new Subscribe(followerUserId, followedToUserId);
         subscribeRepository.save(subscribe);
         log.info("Создана подписка пользователя id = {} на пользователя id = {}", followerUserId, followedToUserId);
     }
@@ -63,7 +57,7 @@ public class SubscribeServiceImpl implements SubscribeService {
     @Transactional
     public void deleteSubscribe(long followerUserId, long followedToUserId) {
         log.debug("Запрос на удаление подписки пользователя id = {} на пользователя id = {}", followerUserId, followedToUserId);
-        subscribeRepository.deleteByFollower_IdIsAndFollowedTo_Id(followerUserId, followedToUserId);
+        subscribeRepository.deleteByFollowerAndFollowedTo(followerUserId, followedToUserId);
         log.info("Удалена подписка пользователя id = {} на пользователя id = {}", followerUserId, followedToUserId);
     }
 
@@ -71,8 +65,8 @@ public class SubscribeServiceImpl implements SubscribeService {
     public List<UserShortDto> getSubscribes(long userId, int from, int size) {
         log.debug("Запрос на получение подписок пользователя id = {}", userId);
         List<Long> followedUsersIds = subscribeRepository.findFollowedUsersIds(userId);
-        List<User> users = userRepository.findAllByIdIn(followedUsersIds, PageRequest.of(from / size, size)).getContent();
-        return userMapper.toShortDto(users);
+        List<UserDto> users = userClient.getUsers(followedUsersIds, from, size);
+        return users.stream().map(user -> new UserShortDto(user.getId(), user.getName())).toList();
     }
 
     @Override
@@ -124,10 +118,5 @@ public class SubscribeServiceImpl implements SubscribeService {
 
         events.forEach(event ->
                 event.setConfirmedRequests(confirmed.getOrDefault(event.getId(), 0L)));
-    }
-
-    private User getUserOrElseThrow(long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь id = " + userId + " не существует"));
     }
 }

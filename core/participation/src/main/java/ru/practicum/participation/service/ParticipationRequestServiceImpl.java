@@ -39,7 +39,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         EventFullDto event = eventClient.getEventForParticipationService(eventId);
 
         // пользователь не является автором события
-        if (event.getInitiator().getId().equals(userId)) {
+        if (event.getInitiator().equals(userId)) {
             throw new ConflictException("Initiator cannot request participation in their own event");
         }
 

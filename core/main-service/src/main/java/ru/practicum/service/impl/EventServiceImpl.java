@@ -28,8 +28,6 @@ import ru.practicum.params.SortSearchParam;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.service.EventService;
-import ru.practicum.user.dal.User;
-import ru.practicum.user.dal.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -51,7 +49,6 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
     private final ParticipationInitiatorClient participationClient;
@@ -81,12 +78,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Loggable
     @Transactional
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest updateRequest) {
         log.info("Update event: {}", updateRequest);
 
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Event id=" + eventId + "not found"));
+        Event event = getEventByIdOrElseThrow(eventId);
 
         if (event.getState() != EventState.PENDING && updateRequest.getStateAction() == AdminEventAction.PUBLISH_EVENT) {
             throw new ConflictException("Cannot publish the event because it's not in the right state: " + event.getState());
@@ -102,15 +99,13 @@ public class EventServiceImpl implements EventService {
         event.setState(updateRequest.getStateAction() == AdminEventAction.PUBLISH_EVENT ? EventState.PUBLISHED : EventState.CANCELED);
         event.setPublishedOn(LocalDateTime.now());
         Event updated = eventRepository.save(event);
+        log.info("Event {} are updated by Admin", eventId);
 
         EventFullDto dto = eventMapper.toFullDto(updated);
-
         Map<Long, Long> views = getViews(List.of(eventId));
         Map<Long, Long> confirmedRequests = participationClient.getConfirmedRequestsCount(List.of(eventId));
-
         dto.setViews(views.get(eventId));
         dto.setConfirmedRequests(confirmedRequests.get(eventId));
-
         return dto;
     }
 
@@ -165,7 +160,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> getUsersEvents(EventUserSearchParam param) {
         log.info("Get users events: {}", param);
-        Page<Event> events = eventRepository.findByInitiatorId(param.getUserId(), param.getPageable());
+        Page<Event> events = eventRepository.findByInitiator(param.getUserId(), param.getPageable());
 
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> views = getViews(eventIds);
@@ -184,41 +179,30 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
+    @Loggable
     public EventFullDto saveEvent(NewEventDto dto, Long userId) {
-        log.info("Save event: {}", dto);
-
-        Event event = eventMapper.toEntity(dto, userId);
-
-        Long categoryId = dto.getCategory().longValue();
-
+        Long categoryId = dto.getCategory();
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Категория с id=" + categoryId + " не найдена"));
 
-        User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id=" + userId + " не найден"));
-
-        event.setInitiator(initiator);
+        Event event = eventMapper.toEntity(dto, userId);
+        event.setInitiator(userId);
         event.setCategory(category);
 
         Event saved = eventRepository.saveAndFlush(event);
+        log.info("Создано новое событие id={}", saved.getId());
 
         EventFullDto dtoResponse = eventMapper.toFullDto(saved);
         dtoResponse.setViews(0L);
         dtoResponse.setConfirmedRequests(0L);
-
         return dtoResponse;
     }
 
     @Override
+    @Loggable
     public EventFullDto getEventByIdAndUserId(Long eventId, Long userId) {
-        log.info("Get event: {}", eventId);
-
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено"));
-
-        if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ConflictException("Событие добавлено не текущем пользователем");
-        }
+        Event event = getEventByIdOrElseThrow(eventId);
+        checkUserIsEventInitiator(event, userId);
 
         Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(List.of(eventId));
         Map<Long, Long> views = getViews(List.of(event.getId()));
@@ -230,20 +214,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto updateEventByUser(Long eventId, Long userId, UpdateEventUserRequest event) {
-        Event eventToUpdate = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено id=" + eventId));
-        if (!Objects.equals(eventToUpdate.getInitiator().getId(), userId) ||
-                eventToUpdate.getState() == EventState.PUBLISHED) {
-            throw new ConflictException("Событие добавлено не текущем пользователем или уже было опубликовано");
+    @Loggable
+    @Transactional
+    public EventFullDto updateEventByUser(Long eventId, Long userId, UpdateEventUserRequest request) {
+        Event eventToUpdate = getEventByIdOrElseThrow(eventId);
+        checkUserIsEventInitiator(eventToUpdate, userId);
+        if (EventState.PUBLISHED.equals(eventToUpdate.getState())) {
+            throw new ConflictException("Событие в статусе PUBLISHED недоступно для редактирования");
         }
-        updateNotNullFields(eventToUpdate, event);
-        if (event.getStateAction() == UserEventAction.CANCEL_REVIEW) {
+
+        updateNotNullFields(eventToUpdate, request);
+        if (request.getStateAction() == UserEventAction.CANCEL_REVIEW) {
             eventToUpdate.setState(EventState.CANCELED);
-        } else if (event.getStateAction() == UserEventAction.SEND_TO_REVIEW) {
+        } else if (request.getStateAction() == UserEventAction.SEND_TO_REVIEW) {
             eventToUpdate.setState(EventState.PENDING);
         }
         Event updated = eventRepository.save(eventToUpdate);
+        log.info("Event {} are updated by author", eventId);
 
         Map<Long, Long> confirmed = participationClient.getConfirmedRequestsCount(List.of(eventId));
         Map<Long, Long> views = getViews(List.of(eventId));
@@ -253,7 +240,6 @@ public class EventServiceImpl implements EventService {
         result.setViews(views.get(eventId));
         return result;
     }
-
 
     private Map<Long, Long> getViews(List<Long> eventIds) {
         List<ViewStatsDto> stats = statsClient.getStats(
@@ -348,7 +334,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void checkUserIsEventInitiator(Event event, Long userId) {
-        if (!event.getInitiator().getId().equals(userId)) {
+        if (!event.getInitiator().equals(userId)) {
             throw new ConflictException(String.format("User %s is not initiator event %s", userId, event.getId()));
         }
     }

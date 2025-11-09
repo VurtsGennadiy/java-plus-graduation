@@ -3,7 +3,6 @@ package ru.practicum.dto.event;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.interaction.dto.CategoryDto;
-import ru.practicum.interaction.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +22,8 @@ public class EventShortDto {
 
     Long id;
 
-    UserShortDto initiator;
+    //UserShortDto initiator;
+    Long initiator;
 
     Boolean paid;
 

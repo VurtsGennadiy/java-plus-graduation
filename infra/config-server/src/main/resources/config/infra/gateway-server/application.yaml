@@ -13,6 +13,12 @@ spring:
       server:
         webflux:
           routes:
+            # ----- User service -----
+            - id: user-service-route
+              uri: lb://user
+              predicates:
+                  - Path=/admin/users/**
+
             # ----- Participation service -----
             - id: participation-service-user-route
               uri: lb://participation

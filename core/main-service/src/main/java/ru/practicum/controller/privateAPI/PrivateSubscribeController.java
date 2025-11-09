@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.interaction.dto.UserShortDto;
+import ru.practicum.interaction.dto.user.UserShortDto;
 import ru.practicum.params.PublicEventSearchParam;
 import ru.practicum.params.SortSearchParam;
 import ru.practicum.service.SubscribeService;

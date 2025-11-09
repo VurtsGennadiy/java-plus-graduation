@@ -7,13 +7,13 @@ import ru.practicum.entity.Subscribe;
 import java.util.List;
 
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
-    void deleteByFollower_IdIsAndFollowedTo_Id(Long followerUserId, Long followedToUserId);
+    void deleteByFollowerAndFollowedTo(Long followerUserId, Long followedToUserId);
 
     //List<Subscribe> findSubscribesByFollower_IdIs(Long followerId);
 
     @Query("""
-            select followedTo.id
+            select followedTo
             from Subscribe
-            where follower.id = ?1""")
+            where follower = ?1""")
     List<Long> findFollowedUsersIds(Long followerUserId);
 }

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.interaction.exception.EntityNotFoundException;
 import ru.practicum.interaction.logging.Loggable;
 import ru.practicum.user.dto.NewUserRequest;
-import ru.practicum.user.dto.UserDto;
+import ru.practicum.interaction.dto.user.UserDto;
 import ru.practicum.user.dal.User;
 import ru.practicum.interaction.exception.BadRequestException;
 import ru.practicum.interaction.exception.ConflictException;
