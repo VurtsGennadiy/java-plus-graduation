@@ -4,9 +4,9 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.entity.Event;
-import ru.practicum.interaction.dto.EventState;
-import ru.practicum.params.EventAdminSearchParam;
-import ru.practicum.params.PublicEventSearchParam;
+import ru.practicum.interaction.dto.event.EventState;
+import ru.practicum.interaction.params.EventAdminSearchParam;
+import ru.practicum.interaction.params.PublicEventSearchParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -96,23 +96,12 @@ public class EventSpecifications {
     }
 
     public static Specification<Event> eventPublicSearchParamSpec(PublicEventSearchParam params) {
-        return Specification.where(EventSpecifications.textInAnnotationOrDescription(params.getText()))
-                .and(EventSpecifications.categories(params.getCategories()))
-                .and(EventSpecifications.isPaid(params.getPaid()))
-                .and(EventSpecifications.startBefore(params.getRangeEnd()))
-                .and(EventSpecifications.startAfter(params.getRangeStart()))
-                .and(EventSpecifications.states(List.of(EventState.PUBLISHED)));
-    }
-
-    public static Specification<Event> eventFeedSearchParamSpec(List<Long> followedUsersIds,
-                                                                PublicEventSearchParam params) {
-
-        return Specification.where(EventSpecifications.userIdIs(followedUsersIds))
+        return Specification.where(EventSpecifications.userIdIs(params.getUsers()))
                 .and(EventSpecifications.textInAnnotationOrDescription(params.getText()))
                 .and(EventSpecifications.categories(params.getCategories()))
                 .and(EventSpecifications.isPaid(params.getPaid()))
-                .and(EventSpecifications.startAfter(params.getRangeStart()))
                 .and(EventSpecifications.startBefore(params.getRangeEnd()))
+                .and(EventSpecifications.startAfter(params.getRangeStart()))
                 .and(EventSpecifications.states(List.of(EventState.PUBLISHED)));
     }
 }

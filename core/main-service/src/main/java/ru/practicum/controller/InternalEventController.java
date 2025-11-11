@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.interaction.client.EventClient;
-import ru.practicum.interaction.dto.EventFullDto;
+import ru.practicum.interaction.dto.event.EventFullDto;
 import ru.practicum.service.EventService;
 
 /**
@@ -16,7 +15,7 @@ import ru.practicum.service.EventService;
 @RestController
 @RequestMapping("/internal")
 @RequiredArgsConstructor
-public class InternalEventController implements EventClient {
+public class InternalEventController {
     private final EventService eventService;
 
     /**

@@ -15,13 +15,19 @@ spring:
           routes:
             # ----- User service -----
             - id: user-service-route
-              uri: lb://user
+              uri: lb://user-service
               predicates:
-                  - Path=/admin/users/**
+                - Path=/admin/users/**
+
+            # ----- Subscription service -----
+            - id: subscription-service-route
+              uri: lb://subscription-service
+              predicates:
+                - Path=/users/{userId}/subscriptions/**,/users/{userId}/events/feed
 
             # ----- Participation service -----
             - id: participation-service-user-route
-              uri: lb://participation
+              uri: lb://request-service
               predicates:
                 - Path=/users/{userId}/requests/**
 

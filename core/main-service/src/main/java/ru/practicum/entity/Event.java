@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import ru.practicum.interaction.dto.EventState;
+import ru.practicum.interaction.dto.event.EventState;
 
 import java.time.LocalDateTime;
 

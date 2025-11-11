@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.interaction.dto.event.EventShortDto;
 
 import java.util.Set;
 

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.entity.Event;
-import ru.practicum.interaction.dto.EventState;
+import ru.practicum.interaction.dto.event.EventState;
 
 import java.util.Optional;
 

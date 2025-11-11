@@ -14,9 +14,10 @@
 
     <modules>
         <module>main-service</module>
-        <module>user</module>
+        <module>user-service</module>
         <module>interaction</module>
-        <module>participation</module>
+        <module>request-service</module>
+        <module>subscription-service</module>
     </modules>
 
 </project>

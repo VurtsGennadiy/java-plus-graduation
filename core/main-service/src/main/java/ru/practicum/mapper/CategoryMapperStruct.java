@@ -3,7 +3,7 @@ package ru.practicum.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import ru.practicum.interaction.dto.CategoryDto;
+import ru.practicum.interaction.dto.event.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
 import ru.practicum.entity.Category;
 

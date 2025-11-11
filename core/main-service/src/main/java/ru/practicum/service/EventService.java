@@ -1,10 +1,11 @@
 package ru.practicum.service;
 
 import ru.practicum.dto.event.*;
-import ru.practicum.interaction.dto.EventFullDto;
-import ru.practicum.params.EventAdminSearchParam;
-import ru.practicum.params.EventUserSearchParam;
-import ru.practicum.params.PublicEventSearchParam;
+import ru.practicum.interaction.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.event.EventShortDto;
+import ru.practicum.interaction.params.EventAdminSearchParam;
+import ru.practicum.interaction.params.EventUserSearchParam;
+import ru.practicum.interaction.params.PublicEventSearchParam;
 import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateRequest;
 import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateResult;
 import ru.practicum.interaction.dto.participation.ParticipationRequestDto;

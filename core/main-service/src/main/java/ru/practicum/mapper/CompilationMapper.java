@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
-import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.interaction.dto.event.EventShortDto;
 import ru.practicum.entity.Compilation;
 import ru.practicum.entity.Event;
 import ru.practicum.repository.EventRepository;

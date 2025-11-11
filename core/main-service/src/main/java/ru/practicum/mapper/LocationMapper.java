@@ -2,7 +2,7 @@ package ru.practicum.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import ru.practicum.interaction.dto.LocationDto;
+import ru.practicum.interaction.dto.event.LocationDto;
 import ru.practicum.entity.Location;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

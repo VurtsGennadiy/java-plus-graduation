@@ -9,9 +9,10 @@ import ru.practicum.interaction.dto.user.UserDto;
 
 import java.util.List;
 
-@FeignClient(name = "user")
+@FeignClient(name = "user-service")
 public interface UserClient {
-    @GetMapping()
+
+    @GetMapping("/admin/users")
     List<UserDto> getUsers(@RequestParam(value = "ids", required = false) List<Long> ids,
                            @RequestParam(defaultValue = "0") @Min(0) Integer from,
                            @RequestParam(defaultValue = "10") @Positive Integer size);

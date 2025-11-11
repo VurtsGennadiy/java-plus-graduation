@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Infra" type="CompoundRunConfigurationType">
+    <toRun name="ConfigServer" type="SpringBootApplicationConfigurationType" />
+    <toRun name="DiscoveryServer" type="SpringBootApplicationConfigurationType" />
+    <toRun name="GatewayServer" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -2,7 +2,7 @@ package ru.practicum.entity.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.practicum.interaction.dto.EventState;
+import ru.practicum.interaction.dto.event.EventState;
 
 @Component
 public class StringToEventStateConverter implements Converter<String, EventState> {

@@ -7,14 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.interaction.dto.EventFullDto;
-import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.interaction.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.event.UpdateEventUserRequest;
 import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateRequest;
 import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateResult;
 import ru.practicum.interaction.dto.participation.ParticipationRequestDto;
-import ru.practicum.params.EventUserSearchParam;
+import ru.practicum.interaction.params.EventUserSearchParam;
 import ru.practicum.service.EventService;
 
 import java.util.List;

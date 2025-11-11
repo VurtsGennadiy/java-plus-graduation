@@ -1,7 +1,7 @@
 package ru.practicum.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.interaction.dto.CategoryDto;
+import ru.practicum.interaction.dto.event.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
 import ru.practicum.entity.Category;
 
@@ -14,6 +14,5 @@ public class CategoryMapper {
 
     public CategoryDto toCategoryDto(Category category) {
         return new CategoryDto(category.getId(), category.getName());
-
     }
 }

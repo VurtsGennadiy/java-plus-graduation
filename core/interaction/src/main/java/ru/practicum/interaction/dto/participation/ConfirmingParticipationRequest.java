@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.interaction.dto.EventFullDto;
+import ru.practicum.interaction.dto.event.EventFullDto;
 
 /**
  * Запрос на подтверждение или отклонение заявок на участие в событии. Отправляет автор события.

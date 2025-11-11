@@ -2,7 +2,7 @@ package ru.practicum.controller.publicAPI;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.interaction.dto.CategoryDto;
+import ru.practicum.interaction.dto.event.CategoryDto;
 import ru.practicum.service.CategoryService;
 
 import java.util.List;

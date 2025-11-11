@@ -7,11 +7,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.interaction.dto.EventFullDto;
-import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.interaction.dto.event.EventFullDto;
+import ru.practicum.interaction.dto.event.EventShortDto;
 import ru.practicum.interaction.exception.BadRequestException;
-import ru.practicum.params.PublicEventSearchParam;
-import ru.practicum.params.SortSearchParam;
+import ru.practicum.interaction.params.PublicEventSearchParam;
+import ru.practicum.interaction.params.SortSearchParam;
 import ru.practicum.service.EventService;
 
 import java.time.LocalDateTime;
@@ -32,20 +32,22 @@ public class PublicEventController {
     public List<EventShortDto> getEvents(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
+            @RequestParam(required = false) List<Long> users,
             @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeEnd,
-            @RequestParam(required = false) SortSearchParam sort,
             @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+            @RequestParam(defaultValue = "EVENT_DATE") SortSearchParam sort,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size,
             HttpServletRequest request) {
 
+        if (rangeEnd == null) {
+            rangeStart = LocalDateTime.now();
+        }
+
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("rangeEnd can't before rangeStart");
-        }
-        if (rangeEnd == null && rangeStart == null) {
-            rangeStart = LocalDateTime.now();
         }
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(dateTimePattern));
@@ -60,6 +62,7 @@ public class PublicEventController {
         PublicEventSearchParam param = PublicEventSearchParam.builder()
                 .text(text)
                 .categories(categories)
+                .users(users)
                 .paid(paid)
                 .onlyAvailable(onlyAvailable)
                 .rangeStart(rangeStart)
