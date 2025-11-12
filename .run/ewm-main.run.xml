@@ -5,7 +5,7 @@
     <envs>
       <env name="SERVER_PORT" value="8080" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="ru.practicum.MainApp" />
+    <option name="MAIN_CLASS_NAME" value="ru.practicum.EventApp" />
     <module name="main-service" />
     <extension name="coverage">
       <pattern>

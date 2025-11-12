@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Core" type="CompoundRunConfigurationType">
-    <toRun name="MainApp" type="SpringBootApplicationConfigurationType" />
-    <toRun name="ParticipationApp" type="SpringBootApplicationConfigurationType" />
+    <toRun name="EventApp" type="SpringBootApplicationConfigurationType" />
+    <toRun name="RequestApp" type="SpringBootApplicationConfigurationType" />
     <toRun name="StatsServer" type="SpringBootApplicationConfigurationType" />
     <toRun name="SubscriptionApp" type="SpringBootApplicationConfigurationType" />
     <toRun name="UserApp" type="SpringBootApplicationConfigurationType" />

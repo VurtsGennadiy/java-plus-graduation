@@ -25,14 +25,14 @@ spring:
               predicates:
                 - Path=/users/{userId}/subscriptions/**,/users/{userId}/events/feed
 
-            # ----- Participation service -----
-            - id: participation-service-user-route
+            # ----- Request service -----
+            - id: request-service-route
               uri: lb://request-service
               predicates:
                 - Path=/users/{userId}/requests/**
 
-            # ----- Main service -----
-            - id: main-service-route
-              uri: lb://main-service
+            # ----- Event service -----
+            - id: event-service-route
+              uri: lb://event-service
               predicates:
                 - Path=/**

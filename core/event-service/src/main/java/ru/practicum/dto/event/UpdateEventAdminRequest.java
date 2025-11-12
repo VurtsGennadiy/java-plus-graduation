@@ -1,15 +1,14 @@
-package ru.practicum.interaction.dto.event;
+package ru.practicum.dto.event;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryDto {
-    Long id;
-
-    String name;
+public class UpdateEventAdminRequest extends UpdateEventRequest {
+    AdminEventAction stateAction;
 }

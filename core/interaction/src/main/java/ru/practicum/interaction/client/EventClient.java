@@ -12,7 +12,7 @@ import ru.practicum.interaction.params.SortSearchParam;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@FeignClient(name = "main-service")
+@FeignClient(name = "event-service")
 public interface EventClient {
     /**
      * Получить информацию о событии.
