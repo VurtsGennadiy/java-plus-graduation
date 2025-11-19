@@ -10,6 +10,7 @@ import ru.practicum.dal.entity.Category;
 import ru.practicum.dal.entity.Event;
 import ru.practicum.dal.repository.CategoryRepository;
 import ru.practicum.dal.repository.EventRepository;
+import ru.practicum.dal.specifications.EventSpecifications;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.*;
 import ru.practicum.interaction.client.RequestClient;
@@ -125,7 +126,7 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, Long> views = getViews(List.of(event.getId()));
         Map<Long, Long> confirmed = requestClient.getConfirmedRequestsCount(List.of(id));
-
+        
         return eventMapper.toFullDto(event,
                 views.getOrDefault(id, 0L),
                 confirmed.getOrDefault(id, 0L));

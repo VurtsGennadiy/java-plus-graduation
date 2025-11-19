@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.interaction.dto.event.EventShortDto;
 import ru.practicum.interaction.dto.user.UserShortDto;
@@ -15,6 +16,7 @@ import ru.practicum.subscription.service.SubscriptionService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/users/{userId}")
 @RequiredArgsConstructor

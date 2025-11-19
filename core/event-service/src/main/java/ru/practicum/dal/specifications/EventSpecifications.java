@@ -2,6 +2,7 @@ package ru.practicum.dal.specifications;
 
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.dal.entity.Event;
 import ru.practicum.interaction.dto.event.EventState;
@@ -11,6 +12,7 @@ import ru.practicum.interaction.params.PublicEventSearchParam;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@UtilityClass
 public class EventSpecifications {
 
     public static Specification<Event> userIdIs(List<Long> userIds) {
