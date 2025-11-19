@@ -1,0 +1,24 @@
+package ru.practicum.interaction.params;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class EventUserSearchParam {
+    Long userId;
+
+    Integer from;
+
+    Integer size;
+
+    public Pageable getPageable() {
+        int page = from / size;
+        return PageRequest.of(page, size);
+    }
+}
