@@ -1,0 +1,16 @@
+@namespace("ru.practicum.ewm.stats.avro")
+protocol UserActionProtocol {
+
+	record UserActionAvro {
+		long userId; // id пользователя, совершившего действие
+		long eventId; // id мероприятия, с которым связано действие
+		ActionTypeAvro actionType; // тип действия
+		timestamp_ms timestamp; // временная метка, указывающая время действия
+	}
+
+	enum ActionTypeAvro {
+		VIEW, // просмотр страницы мероприятия
+		REGISTER, // заявка на участие в мероприятии
+		LIKE // положительная оценка/лайк мероприятию
+	}
+}
