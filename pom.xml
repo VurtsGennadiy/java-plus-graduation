@@ -15,7 +15,6 @@
 		<module>stats</module>
 		<module>infra</module>
 		<module>core</module>
-        <module>recommendations</module>
     </modules>
 
 	<groupId>ru.practicum</groupId>
@@ -34,6 +33,8 @@
 		<protobuf.version>3.23.4</protobuf.version>
 		<grpc.version>1.63.0</grpc.version>
 		<avro.version>1.11.3</avro.version>
+		<grpc-server-net-devh.version>3.1.0.RELEASE</grpc-server-net-devh.version>
+		<grpc-client-net-devh.version>3.1.0.RELEASE</grpc-client-net-devh.version>
 
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
 		<avro-maven-plugin.version>${avro.version}</avro-maven-plugin.version>
@@ -77,6 +78,18 @@
 				<groupId>io.grpc</groupId>
 				<artifactId>grpc-protobuf</artifactId>
 				<version>${grpc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-server-spring-boot-starter</artifactId>
+				<version>${grpc-server-net-devh.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-client-spring-boot-starter</artifactId>
+				<version>${grpc-client-net-devh.version}</version>
 			</dependency>
 
 			<dependency>

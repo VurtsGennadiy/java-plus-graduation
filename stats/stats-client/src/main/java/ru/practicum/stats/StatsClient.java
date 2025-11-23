@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.stats;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +25,13 @@ public class StatsClient {
     private final RestTemplate restTemplate;
     private final DiscoveryClient discoveryClient;
 
-    @CircuitBreaker(name = "statsClient", fallbackMethod = "postHitFallback")
+    @CircuitBreaker(name = "stats-breaker", fallbackMethod = "postHitFallback")
     public void postHit(EndpointHitDto dto) {
         ServiceInstance statsServer = getStatsServerInstance();
         restTemplate.postForEntity(statsServer.getUri() + "/hit", dto, Void.class);
     }
 
-    @CircuitBreaker(name = "statsClient", fallbackMethod = "getStatsFallback")
+    @CircuitBreaker(name = "stats-breaker", fallbackMethod = "getStatsFallback")
     public List<ViewStatsDto> getStats(String start, String end, List<String> uris, boolean unique) throws RestClientException {
         ServiceInstance statsServer = getStatsServerInstance();
 

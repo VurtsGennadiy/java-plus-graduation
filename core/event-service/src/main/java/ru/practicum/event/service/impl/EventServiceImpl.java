@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.StatsClient;
+import ru.practicum.interaction.dto.participation.*;
+import ru.practicum.interaction.exception.BadRequestException;
+import ru.practicum.stats.StatsClient;
 import ru.practicum.event.dal.entity.Category;
 import ru.practicum.event.dal.entity.Event;
 import ru.practicum.event.dal.repository.CategoryRepository;
@@ -16,10 +18,6 @@ import ru.practicum.interaction.client.RequestClient;
 import ru.practicum.interaction.dto.event.EventFullDto;
 import ru.practicum.interaction.dto.event.EventShortDto;
 import ru.practicum.interaction.dto.event.EventState;
-import ru.practicum.interaction.dto.participation.ConfirmingParticipationRequest;
-import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateRequest;
-import ru.practicum.interaction.dto.participation.EventRequestStatusUpdateResult;
-import ru.practicum.interaction.dto.participation.ParticipationRequestDto;
 import ru.practicum.interaction.exception.ConflictException;
 import ru.practicum.interaction.exception.EntityNotFoundException;
 import ru.practicum.interaction.exception.NotFoundException;
@@ -32,10 +30,7 @@ import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.service.EventService;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
@@ -296,6 +291,25 @@ public class EventServiceImpl implements EventService {
         confirmingRequest.setEvent(eventMapper.toFullDto(event));
         confirmingRequest.setUpdateRequest(request);
         return requestClient.confirmingRequests(confirmingRequest);
+    }
+
+    /**
+     * Поставить лайк мероприятию.
+     * Можно поставить лайк только посещённому мероприятию.
+     */
+    @Override
+    @Loggable
+    public void likeEvent(Long eventId, Long userId) {
+        Optional<ParticipationRequestDto> request = requestClient.getRequestForEvent(eventId).stream()
+                .filter(r -> r.getRequester().equals(userId))
+                .findFirst();
+
+        boolean requestIsConfirmed = request.isPresent() && RequestStatus.CONFIRMED == request.get().getStatus();
+
+        if (!requestIsConfirmed) {
+            throw new BadRequestException(
+                    String.format("Event %s cannot be liked by user %s. The user is not a participant in the event.", eventId, userId));
+        }
     }
 
     private Event getEventByIdOrElseThrow(Long eventId) {

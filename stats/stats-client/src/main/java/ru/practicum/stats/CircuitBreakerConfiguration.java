@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.stats;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;

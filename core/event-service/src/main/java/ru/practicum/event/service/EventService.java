@@ -38,4 +38,6 @@ public interface EventService {
     EventRequestStatusUpdateResult confirmingParticipationRequests(Long userId, Long eventId, EventRequestStatusUpdateRequest request);
 
     EventFullDto getEventByIdForParticipation(Long id);
+
+    void likeEvent(Long eventId, Long userId);
 }

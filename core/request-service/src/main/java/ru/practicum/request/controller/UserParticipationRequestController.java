@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.interaction.dto.participation.ParticipationRequestDto;
 import ru.practicum.request.service.ParticipationRequestService;
+import ru.practicum.stats.CollectorClient;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/users/{userId}/requests")
 public class UserParticipationRequestController {
     private final ParticipationRequestService participationRequestService;
+    private final CollectorClient collectorClient;
 
     /**
      * Получение информации о заявках текущего пользователя на участие в чужих событиях
@@ -36,7 +38,10 @@ public class UserParticipationRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto createRequest(@PathVariable @Positive Long userId,
                                                  @RequestParam @Positive Long eventId) {
-        return participationRequestService.createRequest(userId, eventId);
+
+        ParticipationRequestDto requestDto = participationRequestService.createRequest(userId, eventId);
+        collectorClient.saveRegister(userId, eventId);
+        return requestDto;
     }
 
     /**

@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.practicum</groupId>
-        <artifactId>explore-with-me</artifactId>
+        <artifactId>stats</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>recommendations</artifactId>
+    <artifactId>serialization</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>collector</module>
-        <module>serialization</module>
+        <module>proto-schemas</module>
+        <module>avro-schemas</module>
     </modules>
 
 </project>

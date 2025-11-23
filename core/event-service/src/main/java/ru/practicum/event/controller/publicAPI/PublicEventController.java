@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.StatsClient;
+import ru.practicum.stats.CollectorClient;
+import ru.practicum.stats.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.interaction.dto.event.EventFullDto;
 import ru.practicum.interaction.dto.event.EventShortDto;
@@ -30,7 +31,9 @@ public class PublicEventController {
 
     private final EventService eventService;
     private final StatsClient statsClient;
+    private final CollectorClient collectorClient;
     private final String dateTimePattern = "yyyy-MM-dd HH:mm:ss";
+    private static final String USER_ID_HEADER = "X-EWM-USER-ID";
 
     @GetMapping
     public List<EventShortDto> getEvents(
@@ -80,17 +83,22 @@ public class PublicEventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable @Positive Long id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable @Positive Long id,
+                                     @RequestHeader(USER_ID_HEADER) @Positive Long userId) {
+        EventFullDto event = eventService.getEventById(id);
+        collectorClient.saveView(userId, id);
+        return event;
+    }
 
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(dateTimePattern));
+    /**
+     * Поставить лайк мероприятию.
+     * Можно поставить лайк только посещённому мероприятию.
+     */
+    @PutMapping("/{eventId}/like")
+    public void likeEvent(@PathVariable @Positive Long eventId,
+                          @RequestHeader(USER_ID_HEADER) @Positive Long userId) {
 
-        statsClient.postHit(EndpointHitDto.builder()
-                .app("ewm-main-service")
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(timestamp)
-                .build());
-
-        return eventService.getEventById(id);
+        eventService.likeEvent(eventId, userId);
+        collectorClient.saveLike(userId, eventId);
     }
 }

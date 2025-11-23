@@ -5,9 +5,9 @@ package stats.service.collector;
 import "google/protobuf/empty.proto";
 import "messages/user_action.proto";
 
-option java_package = "ru.practicum.ewm.stats.collector";
+option java_package = "ru.practicum.ewm.stats.proto";
 
 service UserActionController {
-  rpc CollectUserAction(stats.message.collector.UserActionProto) returns (google.protobuf.Empty);
+  rpc CollectUserAction(stats.message.UserActionProto) returns (google.protobuf.Empty);
 }
 

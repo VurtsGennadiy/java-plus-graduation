@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.stats;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
