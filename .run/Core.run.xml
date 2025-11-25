@@ -2,7 +2,6 @@
   <configuration default="false" name="Core" type="CompoundRunConfigurationType">
     <toRun name="EventApp" type="SpringBootApplicationConfigurationType" />
     <toRun name="RequestApp" type="SpringBootApplicationConfigurationType" />
-    <toRun name="StatsServer" type="SpringBootApplicationConfigurationType" />
     <toRun name="SubscriptionApp" type="SpringBootApplicationConfigurationType" />
     <toRun name="UserApp" type="SpringBootApplicationConfigurationType" />
     <method v="2" />

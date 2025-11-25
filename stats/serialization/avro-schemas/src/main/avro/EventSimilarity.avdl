@@ -1,0 +1,15 @@
+@namespace("ru.practicum.ewm.stats.avro")
+protocol EventSimilarityProtocol {
+
+	/**
+	  * Сходство между двумя мероприятиями
+	  * Поскольку сходство между мероприятиями A и B равнозначно сходству между B и A
+	  * то принято, что id меропрятий должны быть упорядочены по возрастанию, то есть eventA < eventB
+ 	*/
+	record EventSimilarityAvro {
+		long eventA; // id мероприятия A
+		long eventB; // id мероприятия B
+		double score; // значение рассчитанного сходства мероприятий
+		timestamp_ms timestamp; // метка времени, когда было совершено действие, инициировавшее пересчёт
+	}
+}
