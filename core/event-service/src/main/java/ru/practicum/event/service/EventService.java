@@ -25,6 +25,10 @@ public interface EventService {
 
     List<EventShortDto> searchEvents(PublicEventSearchParam param);
 
+    List<EventShortDto> getRecommendedEvents(Long userId, Integer maxResults);
+
+    List<EventShortDto> getSimilarEvents(Long eventId, Long userId, Integer maxResults);
+
     List<EventShortDto> getUsersEvents(EventUserSearchParam param);
 
     EventFullDto saveEvent(NewEventDto dto, Long userId);

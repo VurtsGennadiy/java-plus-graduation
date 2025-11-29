@@ -7,6 +7,11 @@ grpc:
       enableKeepAlive: true                # поддержание активного соединения с сервером
       keepAliveWithoutCalls: true          # поддерживает keep-alive даже в том случае, если нет активных RPC-вызовов.
       negotiationType: plaintext
+    analyzer:
+      address: 'discovery:///analyzer'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
 
 spring:
   output.ansi.enabled: ALWAYS

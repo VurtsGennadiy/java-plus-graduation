@@ -12,15 +12,15 @@ import ru.practicum.interaction.dto.event.EventShortDto;
         uses = {CategoryMapper.class, LocationMapper.class})
 public interface EventMapper {
 
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", source = "event.category")
     EventShortDto toShortDto(Event event);
 
     @Mapping(target = "category", source = "event.category")
-    EventShortDto toShortDto(Event event, Long views, Long confirmedRequests);
+    EventShortDto toShortDto(Event event, Double rating, Long confirmedRequests);
 
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "location", source = "event.location")
@@ -28,7 +28,7 @@ public interface EventMapper {
 
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "location", source = "event.location")
-    EventFullDto toFullDto(Event event, Long views, Long confirmedRequests);
+    EventFullDto toFullDto(Event event, Double rating, Long confirmedRequests);
 
     @Mapping(target = "location", source = "dto.location")
     @Mapping(target = "initiator", source = "userId")

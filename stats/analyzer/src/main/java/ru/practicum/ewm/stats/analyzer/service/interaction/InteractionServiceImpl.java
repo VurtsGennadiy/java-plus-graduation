@@ -41,7 +41,7 @@ public class InteractionServiceImpl implements InteractionService {
                 newInteraction.getUserId(), newInteraction.getEventId(), forUpdate.getRating(), newInteraction.getRating());
 
         if (forUpdate.getRating() >= newInteraction.getRating()) {
-            log.debug("Новое действие пользователя {} для события {} имеет рейтинг {} ниже, чем сохранённое {}, обновление не требуется",
+            log.debug("Новое действие пользователя {} для события {} имеет рейтинг {} ниже или равное, чем сохранённое {}, обновление не требуется",
                     newInteraction.getUserId(), newInteraction.getEventId(), newInteraction.getRating(), forUpdate.getRating());
             return;
         }

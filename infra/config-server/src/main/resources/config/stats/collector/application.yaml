@@ -9,7 +9,7 @@ collector:
   kafka:
     producer:
       properties:
-        bootstrap.servers: localhost:9092
+        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
         value.serializer: ru.practicum.ewm.stats.serialization.avro.GeneralAvroSerializer
       topics:

@@ -29,15 +29,11 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<RecommendedEventProto> getRecommendationsForUser(UserPredictionsRequestProto request) {
         log.debug("Запрос на получение рекомендаций {}", request);
-
-        // ----- 1 этап
-
         int limit = request.getMaxResults();
-        // мероприятия с которыми пользователь недавно взаимодействовал
-        //List<Long> lastInteractionEvents = interactionRepository.getLastInteractionsEvents(request.getUserId(), limit);
 
+        // ----- Этап 1. Подбор мероприятий, с которыми пользователь не взаимодействовал. -----
         // все мероприятия с которыми взаимодействовал пользователь
-        Set<Long> allInteractionEvents = interactionRepository.getInteractionsEvents(request.getUserId());
+        Set<Long> allInteractionEvents = interactionRepository.findEventIdsForUserInteractions(request.getUserId());
         if (allInteractionEvents.isEmpty()) {
             return Collections.emptyList();
         }
@@ -58,11 +54,7 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .map(s -> lastInteractionEvents.contains(s.getEvent1()) ? s.getEvent2() : s.getEvent1())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        // ----- 2 этап -----
-        // вычисление оценки для каждого нового мероприятия
-
-        // схожести для мероприятий с которыми не было взаимодействий
-        List<Similarity> similaritiesNoInteraction = similarityRepository.findByEvent(recommendedEvents);
+        // ----- Этап 2. Вычисление оценки для каждого нового мероприятия. -----
 
         List<RecommendedEventProto> result = new ArrayList<>(recommendedEvents.size());
         for (Long recommendedEvent : recommendedEvents) {
@@ -72,7 +64,7 @@ public class RecommendationServiceImpl implements RecommendationService {
                     .collect(Collectors.toMap(Similarity::getEvent2, Function.identity()));
 
             // получить оценки пользователя
-            Map<Long, Interaction> interactions = interactionRepository.findByEventIdIn(similarEventsWithInteractions.keySet())
+            Map<Long, Interaction> interactions = interactionRepository.findByEventIdInAndUserId(similarEventsWithInteractions.keySet(), request.getUserId())
                     .stream()
                     .collect(Collectors.toMap(Interaction::getEventId, Function.identity()));
 
@@ -101,24 +93,18 @@ public class RecommendationServiceImpl implements RecommendationService {
     public List<RecommendedEventProto> getSimilarEvents(SimilarEventsRequestProto request) {
         log.debug("Запрос на получение похожих мероприятий: {}", request);
 
-        List<Long> viewedEvents = interactionRepository.getViewedByUserId(request.getUserId());
-        List<Similarity> allPairs = similarityRepository.findByEvent(request.getEventId());
+        Set<Long> interactions = interactionRepository.findEventIdsForUserInteractions(request.getUserId());
+        List<Similarity> similarities = findSimilarityEvents(request.getEventId());
 
-        List<RecommendedEventProto> recommended = allPairs.stream()
-                .filter(pair -> {
-                    Long otherEvent = pair.getEvent1().equals(request.getEventId()) ? pair.getEvent2() : pair.getEvent1();
-                    return !viewedEvents.contains(otherEvent);
-                })
+        List<RecommendedEventProto> recommended = similarities.stream()
+                .filter(s -> interactions.contains(s.getEvent2()))
                 .sorted()
-                .limit(request.getMaxResults())
-                .map(pair -> {
-                    Long otherEvent = pair.getEvent1().equals(request.getEventId()) ? pair.getEvent2() : pair.getEvent1();
-                    return RecommendedEventProto.newBuilder()
-                            .setEventId(otherEvent)
-                            .setScore(pair.getSimilarity())
-                            .build();
-                })
-                .toList();
+                .map(s ->
+                        RecommendedEventProto.newBuilder()
+                                .setEventId(s.getEvent2())
+                                .setScore(s.getSimilarity())
+                                .build()
+                ).toList();
 
         log.debug("Список похожих мероприятий: {}", recommended);
         return recommended;

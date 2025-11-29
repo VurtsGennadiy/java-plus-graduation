@@ -28,17 +28,4 @@ public interface SimilarityRepository extends JpaRepository<Similarity, Long> {
             where s.event1 in ?1 or s.event2 in ?1
             order by s.similarity desc""")
     List<Similarity> findByEvent(Collection<Long> eventIds);
-
-    /**
-     * Получить список коэффициентов схожести мероприятий
-     * @param eventIds - список id мероприятий, по которым осуществляется поиск
-     * @return - список коэффициентов схожести мероприятий, отсортированный по убыванию схожести
-     */
-    @Query("""
-            select s from Similarity as s
-            where s.event1 in ?1 or s.event2 in ?1
-            order by s.similarity desc
-            limit ?2""")
-    List<Similarity> findByEvent(Collection<Long> eventIds, int limit);
-
 }
