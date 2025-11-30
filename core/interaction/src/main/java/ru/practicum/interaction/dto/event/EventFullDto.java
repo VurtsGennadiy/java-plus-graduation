@@ -31,7 +31,7 @@ public class EventFullDto {
     String title;
 
     @Builder.Default
-    Long views = 0L;
+    Double rating = 0.d;
 
     LocalDateTime createdOn;
 

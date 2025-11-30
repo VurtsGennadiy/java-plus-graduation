@@ -27,5 +27,5 @@ public class EventShortDto {
 
     String title;
 
-    Long views;
+    Double rating;
 }

@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Stats" type="CompoundRunConfigurationType">
+    <toRun name="AggregatorApp" type="SpringBootApplicationConfigurationType" />
+    <toRun name="AnalyzerApp" type="SpringBootApplicationConfigurationType" />
+    <toRun name="CollectorApp" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

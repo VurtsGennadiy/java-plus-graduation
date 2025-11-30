@@ -15,7 +15,7 @@
 		<module>stats</module>
 		<module>infra</module>
 		<module>core</module>
-	</modules>
+    </modules>
 
 	<groupId>ru.practicum</groupId>
 	<artifactId>explore-with-me</artifactId>
@@ -30,7 +30,17 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
 
+		<protobuf.version>3.23.4</protobuf.version>
+		<grpc.version>1.63.0</grpc.version>
+		<avro.version>1.11.3</avro.version>
+		<grpc-server-net-devh.version>3.1.0.RELEASE</grpc-server-net-devh.version>
+		<grpc-client-net-devh.version>3.1.0.RELEASE</grpc-client-net-devh.version>
+
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<avro-maven-plugin.version>${avro.version}</avro-maven-plugin.version>
+		<protobuf-plugin.version>2.4.0</protobuf-plugin.version>
+		<kafka-clients.version>3.9.1</kafka-clients.version>
+
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
@@ -56,6 +66,42 @@
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
 				<version>${mapstruct.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-stub</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-server-spring-boot-starter</artifactId>
+				<version>${grpc-server-net-devh.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-client-spring-boot-starter</artifactId>
+				<version>${grpc-client-net-devh.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro</artifactId>
+				<version>${avro.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>${kafka-clients.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -124,6 +170,18 @@
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.avro</groupId>
+					<artifactId>avro-maven-plugin</artifactId>
+					<version>${avro-maven-plugin.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>io.github.ascopes</groupId>
+					<artifactId>protobuf-maven-plugin</artifactId>
+					<version>${protobuf-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

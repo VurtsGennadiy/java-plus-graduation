@@ -1,5 +1,13 @@
 server.port: ${SERVER_PORT:0}
 
+grpc:
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true                # поддержание активного соединения с сервером
+      keepAliveWithoutCalls: true          # поддерживает keep-alive даже в том случае, если нет активных RPC-вызовов.
+      negotiationType: plaintext
+
 spring:
   output.ansi.enabled: ALWAYS
   sql.init.mode: always
